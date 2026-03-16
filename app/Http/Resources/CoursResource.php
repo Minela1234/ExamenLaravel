@@ -20,7 +20,7 @@ class CoursResource extends JsonResource
             'professeur' => $this->professeur,
             'volume_horaire' => $this->volume_horaire,
             'etudiants' => EtudiantResource::collection($this->whenLoaded('etudiants')),
-            'created_at' => $this->creates_at,
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -21,7 +21,7 @@ class EtudiantResource extends JsonResource
             'email' => $this->email,
             'date_naissance' => $this->date_naissance,
             'cours'=> CoursResource::collection($this->whenLoaded('cours')),
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at,     
         ];
     }
 }
