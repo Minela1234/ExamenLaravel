@@ -22,10 +22,24 @@ class StoreEtudiantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'prenom' => 'required',
-            'nom' => 'required',
+            'prenom' => 'required|string',
+            'nom' => 'required|string',
             'email' => 'required|email|unique:etudiants',
-            'date_naissance' => 'required|date',
+            'date_naissance' => 'required|date|before:now',
+        ];
+    }
+
+    public function messages(){
+        return [
+            'prenom.required' => 'Le prenom est obligatoire',
+            'prenom.string' => 'Le prenom doit etre une chaine de caracteres',
+            'nom.required' => 'Le nom est obligatoire',
+            'nom.string' => 'Le nom doit etre une chaine de caracteres',
+            'email.required' => 'L\'email est obligatoire',
+            'email.unique' => 'Cet email est déjà utilisé',
+            'date_naissance.required' => 'La date de naissance est obligation',
+            'date_naissance.date' => 'La date de naissance doit etre de type date',
+            'date_naissance.before' => 'La date de naissance doit etre dans le passé',
         ];
     }
 }

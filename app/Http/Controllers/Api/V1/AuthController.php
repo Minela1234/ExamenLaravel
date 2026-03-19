@@ -20,5 +20,5 @@ class AuthController extends Controller
     }
     public function me(Request $request){
         
-        }
+    }
 }

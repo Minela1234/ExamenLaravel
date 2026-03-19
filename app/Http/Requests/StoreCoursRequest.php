@@ -27,4 +27,17 @@ class StoreCoursRequest extends FormRequest
             'volume_horaire' => 'required|integer|min:1'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'libelle.required' => 'Le libellé est obligatoire',
+            'libelle.string' => 'Le libellé doit etre une chaine de caracteres',
+            'professeur.required' => 'Le professeur est obligatoire',
+            'professeur.string' => 'Le professeur doit etre une chaine de caracteres',
+            'volume_horaire.required' => 'Le volume horaire est obligatoire',
+            'volume_horaire.integer' => 'LeLe volume horaire doit etre un entier',
+            'volume_horaire.min' => 'Le volume horaire doit etre superieur à 0',
+        ];
+    }
 }
