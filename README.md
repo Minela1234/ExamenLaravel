@@ -1,694 +1,198 @@
-# 📚 ExamenLaravel — API REST Gestion Étudiants & Cours
-
-> API REST construite avec **Laravel 12** pour la gestion des étudiants, des cours et de leurs inscriptions (relation Many-to-Many). Projet pédagogique — IPD Licence STI.
-
-![Laravel](https://img.shields.io/badge/Laravel-12.x-red?logo=laravel)
-![PHP](https://img.shields.io/badge/PHP-8.2+-blue?logo=php)
-![Sanctum](https://img.shields.io/badge/Sanctum-4.x-orange)
-![MySQL](https://img.shields.io/badge/MySQL-8.x-blue?logo=mysql)
-![License](https://img.shields.io/badge/license-MIT-green)
+Voici la version en **texte simple (propre, naturel, prêt à copier-coller)** 👇
 
 ---
 
-## 📋 Table des matières
+# ExamenLaravel — API REST Gestion Étudiants & Cours
 
-- [Présentation du projet](#-présentation-du-projet)
-- [Stack technique](#-stack-technique)
-- [Prérequis](#-prérequis)
-- [Installation et configuration](#-installation-et-configuration)
-- [Lancer l'API](#-lancer-lapi)
-- [Modèle de données](#-modèle-de-données)
-- [Authentification](#-authentification)
-- [Endpoints de l'API](#-endpoints-de-lapi)
-- [Exemples d'appels](#-exemples-dappels)
-- [Sécurité](#-sécurité)
-- [Tests](#-tests)
-- [Structure du projet](#-structure-du-projet)
-- [Références](#-références)
+API REST développée avec Laravel 12 pour gérer des étudiants, des cours et leurs inscriptions.
+Projet réalisé dans le cadre de la Licence STI à l’IPD.
 
 ---
 
-## 🎯 Présentation du projet
+## Présentation
 
-Ce projet est une **API REST** (aucune interface web / front-end) développée pour une école. Elle permet de gérer :
+Ce projet est une API REST (sans interface graphique) qui permet de gérer :
 
-- Les **étudiants** (CRUD complet)
-- Les **cours** (CRUD complet)
-- L'**inscription des étudiants aux cours** (relation Many-to-Many avec pivot)
+* les étudiants (ajout, modification, suppression, affichage)
+* les cours (ajout, modification, suppression, affichage)
+* les inscriptions des étudiants aux cours (relation many-to-many)
 
-Toutes les réponses sont au **format JSON**, standardisées via **API Resources**. Les routes sont versionnées sous le préfixe `/api/v1` et protégées par **Laravel Sanctum** (authentification par token).
-
----
-
-## 🛠️ Stack technique
-
-| Technologie | Version | Rôle |
-|-------------|---------|------|
-| PHP | ^8.2 | Langage |
-| Laravel | ^12.0 | Framework |
-| Laravel Sanctum | ^4.3 | Authentification par token |
-| MySQL | 8.x | Base de données |
-| Laravel Tinker | ^2.10 | Console REPL |
-| PHPUnit | ^11.5 | Tests automatisés |
-| Vite | latest | Assets (non utilisé en mode API pur) |
+Toutes les réponses sont en JSON.
+Les routes sont accessibles via /api/v1 et sécurisées avec un système de token.
 
 ---
 
-## ✅ Prérequis
+## Technologies utilisées
 
-Avant de commencer, assurez-vous d'avoir installé sur votre machine :
-
-- **PHP** >= 8.2
-- **Composer** >= 2.x
-- **MySQL** >= 8.x (serveur démarré)
-- **Node.js** >= 18.x et **npm** (pour les assets Vite)
-- **Git**
+* PHP 8.2
+* Laravel 12
+* Laravel Sanctum (authentification)
+* MySQL
+* PHPUnit (tests)
 
 ---
 
-## ⚙️ Installation et configuration
+## Prérequis
 
-### 1. Cloner le dépôt
+Avant de lancer le projet, il faut avoir installé :
 
-```bash
-git clone https://github.com/Minela1234/ExamenLaravel.git
+* PHP 8.2 ou plus
+* Composer
+* MySQL
+* Node.js (optionnel)
+* Git
+
+---
+
+## Installation
+
+1. Cloner le projet
+
+git clone [https://github.com/Minela1234/ExamenLaravel.git](https://github.com/Minela1234/ExamenLaravel.git)
 cd ExamenLaravel
-```
 
-### 2. Installer les dépendances PHP
+2. Installer les dépendances
 
-```bash
 composer install
-```
 
-### 3. Copier le fichier d'environnement
+3. Configurer l’environnement
 
-```bash
 cp .env.example .env
-```
 
-### 4. Configurer le fichier `.env`
+Modifier les informations de la base de données dans .env :
 
-Ouvrez le fichier `.env` et modifiez les variables suivantes selon votre environnement :
-
-```dotenv
-APP_NAME=ExamenLaravel
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
 DB_DATABASE=examenlaravel
 DB_USERNAME=root
 DB_PASSWORD=
-```
 
-> ⚠️ Assurez-vous que la base de données `examenlaravel` existe dans MySQL avant de lancer les migrations. Si elle n'existe pas, créez-la :
-> ```sql
-> CREATE DATABASE examenlaravel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-> ```
+Créer la base de données si nécessaire :
 
-### 5. Générer la clé d'application
+CREATE DATABASE examenlaravel;
 
-```bash
+4. Générer la clé
+
 php artisan key:generate
-```
 
-### 6. Publier la configuration de Sanctum
+5. Installer Sanctum
 
-```bash
 php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-```
 
-### 7. Exécuter les migrations
+6. Lancer les migrations
 
-```bash
 php artisan migrate
-```
 
-### 8. (Optionnel) Peupler la base de données avec des données de test
+7. (Optionnel) Ajouter des données
 
-```bash
 php artisan db:seed
-```
-
-### 9. Installer les dépendances Node.js
-
-```bash
-npm install
-npm run build
-```
 
 ---
 
-## 🚀 Lancer l'API
+## Lancer le projet
 
-```bash
 php artisan serve
-```
 
-L'API sera accessible à l'adresse : **`http://127.0.0.1:8000`**
-
-La base de toutes les routes API est : **`http://127.0.0.1:8000/api/v1`**
+Accès à l’API :
+[http://127.0.0.1:8000/api/v1](http://127.0.0.1:8000/api/v1)
 
 ---
 
-## 🗃️ Modèle de données
+## Base de données
 
-### Entité `etudiants`
+Le projet contient 3 tables principales :
 
-| Champ | Type | Contraintes |
-|-------|------|-------------|
-| `id` | bigint | PK, auto-increment |
-| `prenom` | string | obligatoire |
-| `nom` | string | obligatoire |
-| `email` | string | obligatoire, unique |
-| `date_naissance` | date | obligatoire |
-| `created_at` | timestamp | auto |
-| `updated_at` | timestamp | auto |
+* etudiants
+* cours
+* cours_etudiant (table pivot)
 
-### Entité `cours`
-
-| Champ | Type | Contraintes |
-|-------|------|-------------|
-| `id` | bigint | PK, auto-increment |
-| `libelle` | string | obligatoire |
-| `professeur` | string | obligatoire |
-| `volume_horaire` | integer | obligatoire, > 0 |
-| `created_at` | timestamp | auto |
-| `updated_at` | timestamp | auto |
-
-### Table pivot `cours_etudiant`
-
-| Champ | Type | Description |
-|-------|------|-------------|
-| `etudiant_id` | bigint (FK) | Référence vers `etudiants` |
-| `cours_id` | bigint (FK) | Référence vers `cours` |
-
-### Diagramme des relations
-
-```
-┌──────────────┐           ┌──────────────────┐           ┌──────────────┐
-│   etudiants  │           │  cours_etudiant   │           │    cours     │
-│──────────────│           │──────────────────│           │──────────────│
-│ id           │◄──────────│ etudiant_id (FK)  │           │ id           │
-│ prenom       │           │ cours_id (FK)     │──────────►│ libelle      │
-│ nom          │           └──────────────────┘           │ professeur   │
-│ email        │                                           │ volume_horaire│
-│ date_naissance│                                          │ created_at   │
-│ created_at   │                                           │ updated_at   │
-│ updated_at   │                                           └──────────────┘
-└──────────────┘
-
-Relation : Many-to-Many (un étudiant → plusieurs cours, un cours → plusieurs étudiants)
-```
+Un étudiant peut suivre plusieurs cours, et un cours peut avoir plusieurs étudiants.
 
 ---
 
-## 🔐 Authentification
+## Authentification
 
-L'API utilise **Laravel Sanctum** pour l'authentification par token. Toutes les routes CRUD et Many-to-Many sont protégées.
+L’API utilise un système de token.
 
-### Endpoints d'authentification
+Routes principales :
 
-| Méthode | URI | Description | Auth requise |
-|---------|-----|-------------|:------------:|
-| `POST` | `/api/v1/auth/register` | Créer un compte | ❌ |
-| `POST` | `/api/v1/auth/login` | Se connecter et obtenir un token | ❌ |
-| `POST` | `/api/v1/auth/logout` | Se déconnecter (révoque le token) | ✅ |
-| `GET` | `/api/v1/auth/me` | Informations de l'utilisateur connecté | ✅ |
+POST /auth/register → créer un compte
+POST /auth/login → se connecter
+POST /auth/logout → se déconnecter
+GET /auth/me → infos utilisateur
 
-> Les requêtes authentifiées doivent inclure le header :
-> ```
-> Authorization: Bearer {votre_token}
-> ```
+Pour accéder aux routes protégées :
+
+Authorization: Bearer {token}
 
 ---
 
-## 📡 Endpoints de l'API
+## Endpoints principaux
 
-> **Base URL :** `http://127.0.0.1:8000/api/v1`
-> Toutes les routes ci-dessous nécessitent le header `Authorization: Bearer {token}`.
+Étudiants :
 
-### Étudiants
+GET /etudiants
+POST /etudiants
+GET /etudiants/{id}
+PUT /etudiants/{id}
+DELETE /etudiants/{id}
 
-| Méthode | URI | Description | Statut retourné |
-|---------|-----|-------------|:---------------:|
-| `GET` | `/etudiants` | Lister tous les étudiants (paginé) | `200` |
-| `POST` | `/etudiants` | Créer un étudiant | `201` |
-| `GET` | `/etudiants/{id}` | Détails d'un étudiant | `200` |
-| `PUT/PATCH` | `/etudiants/{id}` | Modifier un étudiant | `200` |
-| `DELETE` | `/etudiants/{id}` | Supprimer un étudiant | `204` |
+Cours :
 
-### Cours
+GET /cours
+POST /cours
+GET /cours/{id}
+PUT /cours/{id}
+DELETE /cours/{id}
 
-| Méthode | URI | Description | Statut retourné |
-|---------|-----|-------------|:---------------:|
-| `GET` | `/cours` | Lister tous les cours (paginé) | `200` |
-| `POST` | `/cours` | Créer un cours | `201` |
-| `GET` | `/cours/{id}` | Détails d'un cours | `200` |
-| `PUT/PATCH` | `/cours/{id}` | Modifier un cours | `200` |
-| `DELETE` | `/cours/{id}` | Supprimer un cours | `204` |
+Inscriptions :
 
-### Inscriptions Many-to-Many
-
-| Méthode | URI | Description | Statut retourné |
-|---------|-----|-------------|:---------------:|
-| `POST` | `/etudiants/{id}/cours/attach` | Inscrire l'étudiant à des cours | `200` |
-| `POST` | `/etudiants/{id}/cours/detach` | Désinscrire l'étudiant de cours | `200` |
-| `POST` | `/etudiants/{id}/cours/sync` | Remplacer toute la liste des cours | `200` |
-
-### Query Parameters disponibles
-
-| Paramètre | Applicable à | Description | Exemple |
-|-----------|-------------|-------------|---------|
-| `page` | Étudiants, Cours | Numéro de page | `?page=2` |
-| `per_page` | Étudiants, Cours | Nombre d'éléments par page | `?per_page=5` |
-| `include` | Étudiants, Cours | Inclure les relations | `?include=cours` |
-| `q` | Étudiants | Recherche sur nom, prénom, email | `?q=dupont` |
-| `professeur` | Cours | Filtrer par professeur | `?professeur=martin` |
+POST /etudiants/{id}/cours/attach
+POST /etudiants/{id}/cours/detach
+POST /etudiants/{id}/cours/sync
 
 ---
 
-## 📝 Exemples d'appels
+## Exemple
 
-### Register
+Créer un étudiant :
 
-```http
-POST /api/v1/auth/register
-Content-Type: application/json
-
-{
-  "name": "Admin",
-  "email": "admin@example.com",
-  "password": "password",
-  "password_confirmation": "password"
-}
-```
-
-**Réponse `201` :**
-```json
-{
-  "data": {
-    "token": "1|abcdefgh...",
-    "user": {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@example.com"
-    }
-  }
-}
-```
-
----
-
-### Login
-
-```http
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-  "email": "admin@example.com",
-  "password": "password"
-}
-```
-
-**Réponse `200` :**
-```json
-{
-  "data": {
-    "token": "2|xyz123...",
-    "user": {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@example.com"
-    }
-  }
-}
-```
-
----
-
-### Créer un étudiant
-
-```http
 POST /api/v1/etudiants
 Authorization: Bearer {token}
-Content-Type: application/json
 
 {
-  "prenom": "Lamine",
-  "nom": "Diallo",
-  "email": "lamine.diallo@example.com",
-  "date_naissance": "2002-05-15"
+"prenom": "Lamine",
+"nom": "Diallo",
+"email": "[lamine.diallo@example.com](mailto:lamine.diallo@example.com)",
+"date_naissance": "2002-05-15"
 }
-```
-
-**Réponse `201` :**
-```json
-{
-  "data": {
-    "id": 1,
-    "prenom": "Lamine",
-    "nom": "Diallo",
-    "email": "lamine.diallo@example.com",
-    "date_naissance": "2002-05-15",
-    "created_at": "2026-02-25T10:00:00.000000Z"
-  }
-}
-```
 
 ---
 
-### Lister les étudiants avec pagination
+## Sécurité
 
-```http
-GET /api/v1/etudiants?page=1&per_page=5
-Authorization: Bearer {token}
-```
-
-**Réponse `200` :**
-```json
-{
-  "data": [
-    {
-      "id": 1,
-      "prenom": "Lamine",
-      "nom": "Diallo",
-      "email": "lamine.diallo@example.com",
-      "date_naissance": "2002-05-15"
-    }
-  ],
-  "links": {
-    "first": "http://127.0.0.1:8000/api/v1/etudiants?page=1",
-    "last": "http://127.0.0.1:8000/api/v1/etudiants?page=1",
-    "prev": null,
-    "next": null
-  },
-  "meta": {
-    "current_page": 1,
-    "per_page": 5,
-    "total": 1,
-    "last_page": 1
-  }
-}
-```
+* Authentification avec token
+* Limitation des requêtes
+* Validation des données
 
 ---
 
-### Créer un cours
+## Tests
 
-```http
-POST /api/v1/cours
-Authorization: Bearer {token}
-Content-Type: application/json
+Pour lancer les tests :
 
-{
-  "libelle": "Développement Web",
-  "professeur": "M. Ndiaye",
-  "volume_horaire": 40
-}
-```
-
-**Réponse `201` :**
-```json
-{
-  "data": {
-    "id": 1,
-    "libelle": "Développement Web",
-    "professeur": "M. Ndiaye",
-    "volume_horaire": 40,
-    "created_at": "2026-02-25T10:05:00.000000Z"
-  }
-}
-```
-
----
-
-### Inscrire un étudiant à des cours (attach)
-
-```http
-POST /api/v1/etudiants/1/cours/attach
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "cours_ids": [1, 2, 3]
-}
-```
-
-**Réponse `200` :**
-```json
-{
-  "message": "Cours attachés avec succès.",
-  "data": {
-    "id": 1,
-    "prenom": "Lamine",
-    "nom": "Diallo",
-    "cours": [
-      { "id": 1, "libelle": "Développement Web" },
-      { "id": 2, "libelle": "Base de Données" },
-      { "id": 3, "libelle": "Algorithmique" }
-    ]
-  }
-}
-```
-
----
-
-### Afficher un étudiant avec ses cours (include)
-
-```http
-GET /api/v1/etudiants/1?include=cours
-Authorization: Bearer {token}
-```
-
-**Réponse `200` :**
-```json
-{
-  "data": {
-    "id": 1,
-    "prenom": "Lamine",
-    "nom": "Diallo",
-    "email": "lamine.diallo@example.com",
-    "date_naissance": "2002-05-15",
-    "cours": [
-      {
-        "id": 1,
-        "libelle": "Développement Web",
-        "professeur": "M. Ndiaye",
-        "volume_horaire": 40
-      }
-    ]
-  }
-}
-```
-
----
-
-### Synchroniser les cours d'un étudiant (sync)
-
-```http
-POST /api/v1/etudiants/1/cours/sync
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "cours_ids": [2, 4]
-}
-```
-
-> ⚠️ Le `sync` **remplace entièrement** la liste des cours de l'étudiant. Les cours non listés seront détachés.
-
-**Réponse `200` :**
-```json
-{
-  "message": "Cours synchronisés avec succès.",
-  "data": { ... }
-}
-```
-
----
-
-### Requête sans token (401)
-
-```http
-GET /api/v1/etudiants
-```
-
-**Réponse `401` :**
-```json
-{
-  "message": "Unauthenticated."
-}
-```
-
----
-
-### Codes HTTP utilisés
-
-| Code | Signification |
-|------|--------------|
-| `200` | Succès |
-| `201` | Ressource créée |
-| `204` | Suppression réussie (pas de body) |
-| `401` | Non authentifié (token absent ou invalide) |
-| `403` | Accès interdit |
-| `404` | Ressource introuvable |
-| `422` | Erreur de validation |
-
----
-
-## 🛡️ Sécurité
-
-### Authentification par token (Sanctum)
-
-Toutes les routes CRUD et Many-to-Many sont protégées par le middleware `auth:sanctum`. Un token valide doit être fourni dans le header `Authorization`.
-
-### Rate Limiting (Throttle)
-
-Un limiteur de requêtes est appliqué sur le groupe `api` afin de protéger l'API contre les abus. Par défaut : **60 requêtes par minute**.
-
-### Validation des entrées
-
-Toutes les entrées sont validées via des **Form Requests** Laravel. En cas d'échec, l'API retourne une réponse `422` avec le détail des erreurs :
-
-```json
-{
-  "message": "The given data was invalid.",
-  "errors": {
-    "email": ["The email has already been taken."],
-    "volume_horaire": ["The volume horaire must be greater than 0."]
-  }
-}
-```
-
----
-
-## 🧪 Tests
-
-### Tests automatisés Laravel
-
-Le projet inclut des **Feature tests** couvrant les scénarios principaux.
-
-```bash
-# Lancer tous les tests
 php artisan test
 
-# Lancer avec détails
-php artisan test --verbose
-```
+---
 
-**Scénarios couverts :**
+## Structure du projet
 
-- ✅ Accès sans token → `401`
-- ✅ Création d'un étudiant → `201`
-- ✅ Création d'un cours → `201`
-- ✅ Attach / Sync → `200`
-- ✅ Suppression → `204`
-
-### Collection Postman
-
-Une collection Postman est fournie avec le projet (`postman_collection.json` + `postman_environment.json`).
-
-**Variables d'environnement Postman :**
-
-| Variable | Valeur |
-|----------|--------|
-| `base_url` | `http://127.0.0.1:8000/api/v1` |
-| `token` | *(stocké automatiquement après login)* |
-
-**Scénario de test Postman :**
-
-1. Register
-2. Login + sauvegarde automatique du token
-3. Création d'un cours
-4. Création d'un étudiant
-5. Attach (inscription à plusieurs cours)
-6. Show étudiant avec `?include=cours`
-7. Sync (remplacement total des cours)
-8. Suppression (vérification du `204`)
-9. Requête sans token → vérification du `401`
-
-**Importer la collection dans Postman :**
-
-```
-Postman → Import → postman_collection.json
-Postman → Environments → Import → postman_environment.json
-```
+* Controllers → logique de l’API
+* Models → gestion des données
+* Requests → validation
+* Resources → format des réponses
+* Tests → tests automatisés
 
 ---
 
-## 📁 Structure du projet
+## Auteur
 
-```
-ExamenLaravel/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   └── Api/V1/
-│   │   │       ├── AuthController.php
-│   │   │       ├── EtudiantController.php
-│   │   │       └── CoursController.php
-│   │   ├── Requests/
-│   │   │   ├── StoreEtudiantRequest.php
-│   │   │   ├── UpdateEtudiantRequest.php
-│   │   │   ├── StoreCoursRequest.php
-│   │   │   └── UpdateCoursRequest.php
-│   │   └── Resources/
-│   │       ├── EtudiantResource.php
-│   │       ├── EtudiantCollection.php
-│   │       ├── CoursResource.php
-│   │       └── CoursCollection.php
-│   └── Models/
-│       ├── User.php
-│       ├── Etudiant.php
-│       └── Cours.php
-├── database/
-│   ├── migrations/
-│   │   ├── ..._create_etudiants_table.php
-│   │   ├── ..._create_cours_table.php
-│   │   └── ..._create_cours_etudiant_table.php
-│   └── seeders/
-├── routes/
-│   └── api.php
-├── tests/
-│   └── Feature/
-│       ├── EtudiantTest.php
-│       └── CoursTest.php
-├── .env.example
-├── composer.json
-└── README.md
-```
-
----
-
-## 📚 Références
-
-Documentation officielle Laravel utilisée dans ce projet :
-
-| Sujet | Lien |
-|-------|------|
-| API Resources | https://laravel.com/docs/12.x/eloquent-resources |
-| Tests Feature/HTTP | https://laravel.com/docs/12.x/testing |
-| Authentication | https://laravel.com/docs/12.x/authentication |
-| Middleware | https://laravel.com/docs/12.x/middleware |
-| Routing & Rate Limiting | https://laravel.com/docs/12.x/routing |
-| Sanctum | https://laravel.com/docs/11.x/sanctum |
-| Eloquent ORM | https://laravel.com/docs/12.x/eloquent |
-| Form Requests | https://laravel.com/docs/12.x/validation#form-request-validation |
-
----
-
-## 👨‍💻 Auteur
-
-Projet réalisé dans le cadre du cours de **Développement API REST** — IPD Licence STI.
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence **MIT**.
+Projet réalisé dans le cadre du cours de développement API REST (Licence STI - IPD).
