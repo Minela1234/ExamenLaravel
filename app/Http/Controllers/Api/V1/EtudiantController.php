@@ -83,7 +83,7 @@ class EtudiantController extends Controller
     {
         $etudiant = Etudiant::findOrfail($id);
 
-        $etudiant->update($request->validate());
+        $etudiant->update($request->validated());
 
         // 200  OK par défaut
         return new EtudiantResource($etudiant);

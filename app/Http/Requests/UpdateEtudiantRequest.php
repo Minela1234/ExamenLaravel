@@ -26,7 +26,7 @@ class UpdateEtudiantRequest extends FormRequest
             'prenom'         => 'sometimes|string',
             'nom'            => 'sometimes|string',
             'email'          => 'sometimes|email|unique:etudiants,email,'.$id,
-            'date_naissance' => 'sometimes|date|before:now',
+            'date_naissance' => 'sometimes|date|before:today',
         ];
     }
      public function messages(): array
